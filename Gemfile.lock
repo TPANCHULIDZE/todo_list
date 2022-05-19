@@ -32,7 +32,7 @@ GEM
       async
     async-pool (0.3.10)
       async (>= 1.25)
-    bcrypt (3.1.17)
+    bcrypt (3.1.18)
     build-environment (1.13.0)
     concurrent-ruby (1.1.10)
     console (1.15.3)
