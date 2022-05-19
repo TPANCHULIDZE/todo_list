@@ -1,0 +1,8 @@
+<h1>Update list </h1>
+
+<form method="post" action="/users/todos/<%= @todo.id %>/lists/update/value/<%= @list.id %>">
+  <input  id="hidden" type="hidden" name="_method" value="patch">
+  <p>Username: <input type="text" name="username" placeholder="Username:"></p>
+  <p>Password: <input type="password" name="password" placeholder="Password:"></p>
+  <input class="btn btn-primary" type="submit" value="Submit">
+</form>

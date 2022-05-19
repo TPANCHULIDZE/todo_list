@@ -1,0 +1,11 @@
+<h1>Update todo title</h1>
+
+<form method="post" action="/users/todos/update/<%= @todo.id %>">
+  <input  id="hidden" type="hidden" name="_method" value="patch">
+  <p>Username: <input type="text" name="username" placeholder="Username:"></p>
+  <p>Password: <input type="password" name="password" placeholder="Password:"></p>
+
+  <br>
+  <p>New Title: <input type="title" name="new_title" placeholder="New title:"></p>
+  <input class="btn btn-primary" type="submit" value="Submit">
+</form>

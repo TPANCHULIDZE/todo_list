@@ -1,0 +1,13 @@
+<h3>Update your account:</h3>
+
+<form method="post" action="/users/update">
+  <input  id="hidden" type="hidden" name="_method" value="patch">
+  <p>Username: <input type="text" name="username" placeholder="Username:"></p>
+  <p>Password: <input type="password" name="password" placeholder="Password:"></p>
+
+  <br>
+  <p>New Username: <input type="text"  name="new_username" placeholder="New Username:"></p>
+  <p>New Email: <input type="email"  name="new_email" placeholder="New Email:"></p>
+  <p>New Password: <input type="password" name="new_password" placeholder="New Password:"></p>
+  <input class="btn btn-primary" type="submit" value="Submit">
+</form>

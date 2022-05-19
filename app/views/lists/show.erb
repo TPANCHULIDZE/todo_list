@@ -1,0 +1,37 @@
+<h1> <%= @todo.title %> </h1>
+	<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">is end?</th>
+      <th scope="col">description</th>
+      <th scope="col">start date</th>
+      <th scope="col">end date</th>
+      <th scope="col">Edit</th>
+      <th scope="col">Delete</th>
+    </tr>
+  </thead>
+<% @lists.each do |list| %>
+  <tbody>
+    <tr>
+      <td>
+            <a class="btn btn-primary" href="/users/todos/<%= @todo.id %>/lists/edit/value/<%= list.id %>" role="button">
+              <%= list.is_end %>
+          </a>
+          </td>
+      <td><%= list.description %></td>
+      <td><%= list.start_date %></td>
+      <td><%= list.end_date %></td>
+      <td><a class="btn btn-primary" href="/users/todos/<%= @todo.id %>/lists/edit/<%= list.id %>" role="button">Edit</a>
+      </td>
+      <td>
+      	<a class="btn btn-danger" href="/users/todos/<%= @todo.id %>/lists/delete/<%= list.id %>" role="button">Delete</a>	
+      </td>
+    </tr>
+  </tbody>
+<% end %>
+</table>
+<div>
+	<br>
+	<a class="btn btn-primary" href="/users/todos/<%= @todo.id %>/lists/new" role="button">New list</a>
+</div>
+
