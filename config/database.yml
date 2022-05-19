@@ -12,7 +12,3 @@ development:
   <<: *default
   database: todo
 
-production:
-  <<: *default
-  database: todo
-  
