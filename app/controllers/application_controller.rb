@@ -7,9 +7,8 @@ class ApplicationController < Sinatra::Base
     enable :sessions
   end
 
-
   get "/" do
-    erb :index
+    erb :show
   end
 
   def signed_in?

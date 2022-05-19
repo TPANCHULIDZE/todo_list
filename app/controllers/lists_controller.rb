@@ -3,77 +3,124 @@ class ListsController < ApplicationController
   get '/users/todos/:id/lists' do
     @todo = Todo.find(params[:id])
     @lists = List.where(todo_id: params[:id])
+
     erb :'lists/show'
   end
 
   get '/users/todos/:id/lists/new' do
     @todo = Todo.find(params[:id])
+
     erb :'lists/new'
+  end
+
+  get "/users/todos/:todo_id/lists/delete/:id" do
+    redirect '/users/signin' unless signed_in?
+
+    @todo = Todo.find_by(id: params[:todo_id])
+    @list = List.find_by(id: params[:id])
+
+    erb :'lists/delete'
+  end
+
+  delete "/users/todos/:todo_id/lists/delete/:id" do
+    redirect '/users/signin' unless signed_in?
+
+    @todo = Todo.find(params[:todo_id])
+    @list = List.find(params[:id])
+
+    redirect "/users/todos/#{@todo.id}/lists/delete/#{@list.id}" if not_authenticate_user(params)
+      
+    @list.destroy
+    
+    redirect "/users/todos/#{@todo.id}/lists" 
   end
 
   post '/users/todos/:id/lists/create' do
     @todo = Todo.find(params[:id])
-     if params[:description] == "" || params[:start_date] == "" || params[:end_date] == ""
-      redirect "/users/todos/#{@todo.id}/lists/new"
-    else
-      @list = List.new(description: params[:description], start_date: params[:start_date], end_date: params[:end_date])
-      @list.todo_id = @todo.id
-      @list.is_end = false
-      @list.save
-      redirect  "/users/todos/#{@todo.id}/lists"    
-    end
+
+    redirect "/users/todos/#{@todo.id}/lists/new" if empty_field?(params)
+    
+    @list = create_list(params)
+    
+    redirect  "/users/todos/#{@todo.id}/lists"    
   end
 
   get '/users/todos/:todo_id/lists/edit/:id' do
     @todo = Todo.find(params[:todo_id])
     @list = List.find(params[:id])
+
     erb :'lists/edit'
   end
 
   get "/users/todos/:todo_id/lists/edit/value/:id" do
     @list = List.find(params[:id])
     @todo = Todo.find(params[:todo_id])
+
     erb :'lists/edit_value'
   end
 
   patch "/users/todos/:todo_id/lists/update/value/:id" do
-    if signed_in?
-      @current_user = User.find(session[:user_id])
-      @user = User.find_by(username: params[:username])
-      @todo = Todo.find(params[:todo_id])
-      @list = List.find(params[:id])
-      if @user == @current_user && @user.authenticate(params[:password])
-        @list.update(is_end: !@list.is_end)
-        redirect "/users/todos/#{@todo.id}/lists"
-      else
-        redirect "/users/todos/#{@todo.id}/lists/edit/value/#{@list.id}"
-      end
-    else
-      redirect '/users/signin'
-    end
+    redirect '/users/signin' unless signed_in?
+
+    @todo = Todo.find(params[:todo_id])
+    @list = List.find(params[:id])
+
+    redirect "/users/todos/#{@todo.id}/lists/edit/value/#{@list.id}" if not_authenticate_user(params)
+      
+    @list.update(is_end: !@list.is_end)
+
+    redirect "/users/todos/#{@todo.id}/lists"
   end
 
   patch '/users/todos/:todo_id/lists/update/:id' do
-    if signed_in?
-      @current_user = User.find(session[:user_id])
-      @user = User.find_by(username: params[:username])
-      @todo = Todo.find(params[:todo_id])
-      @list = List.find(params[:id])
-      if @user == @current_user && @user.authenticate(params[:password])
-        if params[:description] == "" || params[:start_date] == "" || params[:end_date] == ""
-          redirect "/users/todos/#{@todo.id}/lists/edit/#{@list.id}"
-        else
-          @list.update(description: params[:description], start_date: params[:start_date], end_date: params[:end_date])
-          redirect  "/users/todos/#{@todo.id}/lists"
-        end
-      else
-        redirect "/users/todos/#{@todo.id}/lists/edit/#{@list.id}"
-      end
-    else
-      redirect '/users/signin'
-    end
+    redirect '/users/signin' unless signed_in?
+
+    @todo = Todo.find(params[:todo_id])
+    @list = List.find(params[:id])
+
+    redirect "/users/todos/#{@todo.id}/lists/edit/#{@list.id}"  if not_authenticate_user(params)
+        
+    list_info = fill_empty_field(params, @list)
+
+    @list = update_list(list_info, @list)
+
+    redirect  "/users/todos/#{@todo.id}/lists"
   end
 
+  private
+
+  def empty_field?(list_info)
+    list_info[:description].strip == "" || list_info[:start_date].strip == "" || list_info[:end_date].strip == ""
+  end
+
+  def fill_empty_field(list_info, list)
+    list_info[:description] = list.description if list_info[:description] == ""
+
+    list_info[:start_date] = list.start_date if list_info[:start_date] == "" 
+
+    list_info[:end_date] = list.end_date if list_info[:end_date] == ""
+
+    list_info
+  end
+
+  def create_list(list_info)
+    list = List.new(description: list_info[:description], start_date: list_info[:start_date], end_date: list_info[:end_date])
+    list.todo_id = list_info[:id]
+    list.is_end = false
+    list.save
+    list
+  end
+
+  def not_authenticate_user(user_info)
+    user = User.find_by(username: params[:username])
+    current_user = User.find(session[:user_id])
+    !(user == current_user && user.authenticate(user_info[:password]))
+  end
+
+  def update_list(list_info, list)
+    list.update(description: list_info[:description], start_date: list_info[:start_date], end_date: list_info[:end_date])
+    list
+  end
 end
 
 
