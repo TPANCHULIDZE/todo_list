@@ -33,9 +33,15 @@ class ListsController < ApplicationController
     @todo = Todo.find(params[:todo_id])
     @list = List.find(params[:id])
 
-    redirect "/users/todos/#{@todo.id}/lists/delete/#{@list.id}" if not_authenticate_user(params)
-      
+     
+    if not_authenticate_user(params)
+      flash[:alert] = "username or password is incorrect"
+      redirect "/users/todos/#{@todo.id}/lists/delete/#{@list.id}"
+    end
+
+    flash[:success] = "#{@list.description} is deleted"
     @list.destroy
+
     
     redirect "/users/todos/#{@todo.id}/#{START_PAGE}/lists"
   end
@@ -43,10 +49,15 @@ class ListsController < ApplicationController
   post '/users/todos/:id/lists/create' do
     @todo = Todo.find(params[:id])
 
-    redirect "/users/todos/#{@todo.id}/lists/new" if empty_field?(params)
     
+    if empty_field?(params)
+      flash[:alert] = "some field is empty"
+      redirect "/users/todos/#{@todo.id}/lists/new" 
+    end
+
     @list = create_list(params)
-    
+    flash[:success] = "#{@list.description} is created"
+
     redirect  "/users/todos/#{@todo.id}/#{START_PAGE}/lists"  
   end
 
@@ -70,8 +81,13 @@ class ListsController < ApplicationController
     @todo = Todo.find(params[:todo_id])
     @list = List.find(params[:id])
 
-    redirect "/users/todos/#{@todo.id}/lists/edit/value/#{@list.id}" if not_authenticate_user(params)
-      
+     
+    if not_authenticate_user(params)
+      flash[:alert] = "password or username is incorrect"
+      redirect "/users/todos/#{@todo.id}/lists/edit/value/#{@list.id}"
+    end
+    
+    flash[:success] = "#{@list.description} is done"
     @list.update(is_end: !@list.is_end)
 
     redirect "/users/todos/#{@todo.id}/#{START_PAGE}/lists"
@@ -83,11 +99,14 @@ class ListsController < ApplicationController
     @todo = Todo.find(params[:todo_id])
     @list = List.find(params[:id])
 
-    redirect "/users/todos/#{@todo.id}/lists/edit/#{@list.id}"  if not_authenticate_user(params)
-        
+    if not_authenticate_user(params)
+      flash[:alert] = "username or password is incorrect"
+      redirect "/users/todos/#{@todo.id}/lists/edit/#{@list.id}" 
+    end
     list_info = fill_empty_field(params, @list)
 
     @list = update_list(list_info, @list)
+    flash[:success] = "#{@list.description} is updated"
 
     redirect  "/users/todos/#{@todo.id}/#{START_PAGE}/lists"
   end

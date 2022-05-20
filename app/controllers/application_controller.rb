@@ -1,5 +1,6 @@
 require './config/environment'
 
+
 class ApplicationController < Sinatra::Base
   MAX_NUMBER_OF_ITEM = 2
   START_PAGE = 1
@@ -8,6 +9,7 @@ class ApplicationController < Sinatra::Base
     set :views, "app/views"
     set :public_dir, "public"
     enable :sessions
+    register Sinatra::Flash
   end
 
   get "/" do
@@ -15,7 +17,7 @@ class ApplicationController < Sinatra::Base
   end
 
   def signed_in?
-    session[:user_id]
+    !!session[:user_id]
   end
 
   def current_user

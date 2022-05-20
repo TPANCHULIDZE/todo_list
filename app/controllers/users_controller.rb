@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   end
 
   get '/users/signup' do
-    redirect '/lists' if signed_in?
+    redirect '/users' if signed_in?
    
     erb :'users/new'
   end
@@ -18,6 +18,8 @@ class UsersController < ApplicationController
    
     @user = create_user(params)
     fill_session(@user)
+
+    flash[:success] = "#{session[:username]} is sign up"
 
     redirect "/"
   end
@@ -33,17 +35,23 @@ class UsersController < ApplicationController
 
     if @user && @user.authenticate(params[:password])
       fill_session(@user)
+      flash[:success] = "#{session[:username]} is sign in"
       redirect "/"
     else
+      flash[:alert] = "username or password is incorrect"
       redirect '/users/signin'
     end
   end
 
   get '/users/logout' do
     redirect '/' unless signed_in?
-    
+
+    username = session[:username]
     session.destroy
-    erb :'users/logout'
+
+    flash[:success] = "#{username} is logout"
+
+    redirect '/users/signin'
   end
 
   get '/users/edit' do
@@ -60,6 +68,7 @@ class UsersController < ApplicationController
     redirect '/users/edit' if is_incorrect_information_for_update?(@user, user_info)
 
     update_user(@user, user_info)
+    flash[:success] = "#{@user.username} update successfully"
 
     redirect "/"
   end
@@ -76,7 +85,9 @@ class UsersController < ApplicationController
   end
 
   def correct_user(user, user_info)
-    user == current_user() && user.authenticate(user_info[:password])
+    is_correct_user = user == current_user() && user.authenticate(user_info[:password])
+    flash[:alert] = "username or password is incorrect" unless is_correct_user
+    is_correct_user
   end
 
   def become_validate_information(user_info, user)
@@ -98,11 +109,15 @@ class UsersController < ApplicationController
   end
 
   def is_username_used?(username)
-    User.find_by(username: username) && session[:username] != username
+    is_used = User.find_by(username: username) && session[:username] != username
+    flash[:alert] = "#{username} is already used" if is_used
+    is_used
   end
 
   def is_not_every_field_fill?(user_info)
-    user_info[:username] == "" || user_info[:password] == "" || user_info[:email] == ""
+    is_empty_field = user_info[:username] == "" || user_info[:password] == "" || user_info[:email] == ""
+    flash[:alert] = "some field is empty" if is_empty_field
+    is_empty_field
   end
 
   def update_user(user, user_info)

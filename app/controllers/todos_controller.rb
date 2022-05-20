@@ -1,4 +1,5 @@
 require 'pg'
+require 'sinatra/flash'
 
 class TodosController < ApplicationController
 
@@ -15,16 +16,24 @@ class TodosController < ApplicationController
   end
 
   get '/users/todos/add' do
+    redirect "/users/signin" unless signed_in?
+
     @user = User.find_by(id: session[:user_id])
 
     erb :'todos/new'
   end
 
   post '/users/todos/create' do
-    redirect '/users/todos/add' if params[:title] == ""
-      
-    @todo = create_todo(params)
+    redirect "/users/signin" unless signed_in?
 
+    if params[:title] == ""
+      flash[:alert] = "title is empty" 
+      redirect '/users/todos/add' 
+    end
+
+    @todo = create_todo(params)
+    flash[:success] = "new todo is create"
+    
     redirect "/users/#{START_PAGE}/todos"
   end
 
@@ -42,10 +51,14 @@ class TodosController < ApplicationController
 
     @todo = Todo.find(params[:id])
 
-    redirect "/users/todos/edit/#{params[:id]}" if (not_authenticate_user(params) || params[:new_title] == "")
+    if (not_authenticate_user(params) || params[:new_title] == "")
+      flash[:alert] = "some information is not correct"
+      redirect "/users/todos/edit/#{params[:id]}" 
+    end
 
     @todo.update(title: params[:new_title])
-    
+    flash[:success] = "successfully update #{@todo.title}"
+
     redirect "/users/#{START_PAGE}/todos" 
   end
 
@@ -63,10 +76,15 @@ class TodosController < ApplicationController
 
     @todo = Todo.find(params[:id])
 
-    redirect "/users/todos/delete/#{params[:id]}" if not_authenticate_user(params)
-      
+    if not_authenticate_user(params)
+      flash[:alert] = "username or password is not correct"
+      redirect "/users/todos/delete/#{params[:id]}" 
+    end
+
+    todo_name = @todo.title
     @todo.destroy
-    
+    flash[:success] = "#{todo_name} is deleted"
+
     redirect "/users/#{START_PAGE}/todos" 
   end
 
