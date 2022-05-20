@@ -1,12 +1,17 @@
 require 'pg'
+
 class TodosController < ApplicationController
-    
-  get '/users/todos' do
+
+  get '/users/:id/todos' do
     redirect '/users/signin' unless signed_in?
 
-    @todos = Todo.where(user_id: session[:user_id])
+    @page_id = [params[:id].to_i, START_PAGE].max
+    @start_point = (@page_id - 1) * MAX_NUMBER_OF_ITEM
+    @number_of_todos = Todo.where(user_id: session[:user_id]).count(:id)
 
-    erb :'todos/index'
+    @todos = Todo.where(user_id: session[:user_id]).limit(MAX_NUMBER_OF_ITEM).offset(@start_point)
+
+    erb :'todos/show'
   end
 
   get '/users/todos/add' do
@@ -20,7 +25,7 @@ class TodosController < ApplicationController
       
     @todo = create_todo(params)
 
-    redirect '/users/todos'
+    redirect "/users/#{START_PAGE}/todos"
   end
 
   get '/users/todos/edit/:id' do
@@ -41,7 +46,7 @@ class TodosController < ApplicationController
 
     @todo.update(title: params[:new_title])
     
-    redirect '/users/todos'    
+    redirect "/users/#{START_PAGE}/todos" 
   end
 
   get '/users/todos/delete/:id' do
@@ -62,7 +67,7 @@ class TodosController < ApplicationController
       
     @todo.destroy
     
-    redirect '/users/todos'  
+    redirect "/users/#{START_PAGE}/todos" 
   end
 
   private 

@@ -1,0 +1,23 @@
+<h1><%= session[:username] %>'s todo list</h1>
+
+<% @todos.each do |todo| %>
+	<div>
+		<br>
+		<h2> <%= todo.title %> </h2>
+		<a class="btn btn-primary" href="/users/todos/<%= todo.id %>/<%= START_PAGE %>/lists" role="button">Lists</a>
+		<a class="btn btn-primary" href="/users/todos/edit/<%= todo.id %>" role="button">Edit</a>
+		<a class="btn btn-danger" href="/users/todos/delete/<%= todo.id %>" role="button">Delete</a>	
+	</div>
+<% end %>
+
+
+<div>
+	<br>
+	<% if @page_id > START_PAGE %>
+	    <a class="btn btn-primary" align="center" href="/users/<%= @page_id - 1 %>/todos">RPEVIOUS PAGE</a>    
+	<% end %>
+
+	<% if @page_id * MAX_NUMBER_OF_ITEM < @number_of_todos %>
+		<a class="btn btn-primary" align="center" href="/users/<%= @page_id + 1 %>/todos">NEXT PAGE</a>
+	<% end %>
+</div>

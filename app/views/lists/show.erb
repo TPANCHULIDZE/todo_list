@@ -14,9 +14,8 @@
   <tbody>
     <tr>
       <td>
-            <a class="btn btn-primary" href="/users/todos/<%= @todo.id %>/lists/edit/value/<%= list.id %>" role="button">
-              <%= list.is_end %>
-          </a>
+          <% status = list.is_end ? "YES" : "NO" %>
+          <a class="btn btn-primary" href="/users/todos/<%= @todo.id %>/lists/edit/value/<%= list.id %>" role="button"> <%= status %> </a>
           </td>
       <td><%= list.description %></td>
       <td><%= list.start_date %></td>
@@ -35,3 +34,22 @@
 	<a class="btn btn-primary" href="/users/todos/<%= @todo.id %>/lists/new" role="button">New list</a>
 </div>
 
+<br>
+
+<% if @page_id > START_PAGE %>
+  <div>
+    <a class="btn btn-primary" align="center" href="/users/todos/<%= @todo.id %>/<%= @page_id - 1 %>/lists">RPEVIOUS PAGE</a>
+  </div>
+      
+<% end %>
+
+<% if @page_id * MAX_NUMBER_OF_ITEM < @number_of_lists %>
+  <div>
+    
+    <% if @page_id > START_PAGE %>
+      <a class="btn btn-primary" align="center" href="/users/todos/<%= @todo.id %>/<%= @page_id - 1 %>/lists">RPEVIOUS PAGE</a>
+    <% end %>
+
+      <a class="btn btn-primary" align="center" href="/users/todos/<%= @todo.id %>/<%= @page_id + 1 %>/lists">NEXT PAGE</a>
+  </div>
+<% end %>

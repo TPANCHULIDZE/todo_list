@@ -25,7 +25,7 @@
               <a class="nav-link" href="/users/todos/add">add new todo</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/users/todos"> <%= session[:username] %>'s todos</a>
+              <a class="nav-link" href="/users/<%= 1 %>/todos"> <%= session[:username] %>'s todos</a>
             </li>
           <% else %>
               <li class="nav-item">

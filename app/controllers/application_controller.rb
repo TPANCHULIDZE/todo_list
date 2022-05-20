@@ -1,6 +1,9 @@
 require './config/environment'
 
 class ApplicationController < Sinatra::Base
+  MAX_NUMBER_OF_ITEM = 2
+  START_PAGE = 1
+  
   configure do
     set :views, "app/views"
     set :public_dir, "public"

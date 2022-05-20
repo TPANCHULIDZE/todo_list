@@ -1,8 +1,13 @@
 class ListsController < ApplicationController
 
-  get '/users/todos/:id/lists' do
+  get '/users/todos/:id/:page_id/lists' do
     @todo = Todo.find(params[:id])
-    @lists = List.where(todo_id: params[:id])
+
+    @page_id = [params[:page_id].to_i, START_PAGE].max
+    @start_point = (@page_id - 1) * MAX_NUMBER_OF_ITEM
+    @number_of_lists = List.where(todo_id: params[:id]).count(:id)
+
+    @lists = List.where(todo_id: params[:id]).limit(MAX_NUMBER_OF_ITEM).offset(@start_point)
 
     erb :'lists/show'
   end
@@ -32,7 +37,7 @@ class ListsController < ApplicationController
       
     @list.destroy
     
-    redirect "/users/todos/#{@todo.id}/lists" 
+    redirect "/users/todos/#{@todo.id}/#{START_PAGE}/lists"
   end
 
   post '/users/todos/:id/lists/create' do
@@ -42,7 +47,7 @@ class ListsController < ApplicationController
     
     @list = create_list(params)
     
-    redirect  "/users/todos/#{@todo.id}/lists"    
+    redirect  "/users/todos/#{@todo.id}/#{START_PAGE}/lists"  
   end
 
   get '/users/todos/:todo_id/lists/edit/:id' do
@@ -69,7 +74,7 @@ class ListsController < ApplicationController
       
     @list.update(is_end: !@list.is_end)
 
-    redirect "/users/todos/#{@todo.id}/lists"
+    redirect "/users/todos/#{@todo.id}/#{START_PAGE}/lists"
   end
 
   patch '/users/todos/:todo_id/lists/update/:id' do
@@ -84,7 +89,7 @@ class ListsController < ApplicationController
 
     @list = update_list(list_info, @list)
 
-    redirect  "/users/todos/#{@todo.id}/lists"
+    redirect  "/users/todos/#{@todo.id}/#{START_PAGE}/lists"
   end
 
   private
