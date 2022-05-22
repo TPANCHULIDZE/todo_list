@@ -34,11 +34,6 @@ class ListsController < ApplicationController
     @list = List.find(params[:id])
 
      
-    if not_authenticate_user(params)
-      flash[:alert] = "username or password is incorrect"
-      redirect "/users/todos/#{@todo.id}/lists/delete/#{@list.id}"
-    end
-
     flash[:success] = "#{@list.description} is deleted"
     @list.destroy
 
@@ -81,12 +76,6 @@ class ListsController < ApplicationController
     @todo = Todo.find(params[:todo_id])
     @list = List.find(params[:id])
 
-     
-    if not_authenticate_user(params)
-      flash[:alert] = "password or username is incorrect"
-      redirect "/users/todos/#{@todo.id}/lists/edit/value/#{@list.id}"
-    end
-    
     flash[:success] = "#{@list.description} is done"
     @list.update(is_end: !@list.is_end)
 
@@ -99,10 +88,6 @@ class ListsController < ApplicationController
     @todo = Todo.find(params[:todo_id])
     @list = List.find(params[:id])
 
-    if not_authenticate_user(params)
-      flash[:alert] = "username or password is incorrect"
-      redirect "/users/todos/#{@todo.id}/lists/edit/#{@list.id}" 
-    end
     list_info = fill_empty_field(params, @list)
 
     @list = update_list(list_info, @list)

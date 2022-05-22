@@ -3,10 +3,10 @@ require 'sinatra/flash'
 
 class TodosController < ApplicationController
 
-  get '/users/:id/todos' do
+  get '/users/:page_id/todos' do
     redirect '/users/signin' unless signed_in?
 
-    @page_id = [params[:id].to_i, START_PAGE].max
+    @page_id = [params[:page_id].to_i, START_PAGE].max
     @start_point = (@page_id - 1) * MAX_NUMBER_OF_ITEM
     @number_of_todos = Todo.where(user_id: session[:user_id]).count(:id)
 
@@ -51,11 +51,6 @@ class TodosController < ApplicationController
 
     @todo = Todo.find(params[:id])
 
-    if (not_authenticate_user(params) || params[:new_title] == "")
-      flash[:alert] = "some information is not correct"
-      redirect "/users/todos/edit/#{params[:id]}" 
-    end
-
     @todo.update(title: params[:new_title])
     flash[:success] = "successfully update #{@todo.title}"
 
@@ -76,14 +71,9 @@ class TodosController < ApplicationController
 
     @todo = Todo.find(params[:id])
 
-    if not_authenticate_user(params)
-      flash[:alert] = "username or password is not correct"
-      redirect "/users/todos/delete/#{params[:id]}" 
-    end
-
-    todo_name = @todo.title
+    flash[:success] = "#{@todo.title} is deleted"
     @todo.destroy
-    flash[:success] = "#{todo_name} is deleted"
+    
 
     redirect "/users/#{START_PAGE}/todos" 
   end
@@ -96,11 +86,4 @@ class TodosController < ApplicationController
     @todo.save
     @todo
   end
-
-  def not_authenticate_user(user_info)
-    user = User.find_by(username: params[:username])
-    current_user = User.find(session[:user_id])
-    !(user == current_user && user.authenticate(user_info[:password]))
-  end
-
 end

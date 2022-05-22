@@ -1,6 +1,5 @@
 require './config/environment'
 
-
 class ApplicationController < Sinatra::Base
   MAX_NUMBER_OF_ITEM = 2
   START_PAGE = 1

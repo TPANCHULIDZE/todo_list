@@ -34,22 +34,21 @@
 	<a class="btn btn-primary" href="/users/todos/<%= @todo.id %>/lists/new" role="button">New list</a>
 </div>
 
-<br>
 
-<% if @page_id > START_PAGE %>
-  <div>
-    <a class="btn btn-primary" align="center" href="/users/todos/<%= @todo.id %>/<%= @page_id - 1 %>/lists">RPEVIOUS PAGE</a>
-  </div>
-      
-<% end %>
 
-<% if @page_id * MAX_NUMBER_OF_ITEM < @number_of_lists %>
-  <div>
-    
+
+
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
     <% if @page_id > START_PAGE %>
-      <a class="btn btn-primary" align="center" href="/users/todos/<%= @todo.id %>/<%= @page_id - 1 %>/lists">RPEVIOUS PAGE</a>
+      <li class="page-item disabled">
+       <a class="btn btn-primary" align="center" href="/users/todos/<%= @todo.id %>/<%= @page_id - 1 %>/lists">RPEVIOUS</a>
+      </li>
     <% end %>
-
-      <a class="btn btn-primary" align="center" href="/users/todos/<%= @todo.id %>/<%= @page_id + 1 %>/lists">NEXT PAGE</a>
-  </div>
-<% end %>
+    <% if @page_id * MAX_NUMBER_OF_ITEM < @number_of_lists %>
+      <li class="page-item">
+        <a class="btn btn-primary" href="/users/todos/<%= @todo.id %>/<%= @page_id + 1 %>/lists">NEXT</a>  
+      </li>
+    <% end %>
+  </ul>
+</nav>

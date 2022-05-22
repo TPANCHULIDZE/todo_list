@@ -1,4 +1,4 @@
-
+require 'em/pure_ruby'
 require_relative './config/environment'
 require 'sinatra/activerecord'
 

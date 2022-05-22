@@ -1,13 +1,56 @@
-<h1>Update list </h1>
+<section class="vh-100" style="background-color: #eee;">
+  <div class="container h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-lg-12 col-xl-11">
+        <div class="card text-black" style="border-radius: 25px;">
+          <div class="card-body p-md-5">
+            <div class="row justify-content-center">
+              <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
 
-<form method="post" action="/users/todos/<%= @todo.id %>/lists/update/<%= @list.id %>">
-  <input  id="hidden" type="hidden" name="_method" value="patch">
-  <p>Username: <input type="text" name="username" placeholder="Username:"></p>
-  <p>Password: <input type="password" name="password" placeholder="Password:"></p>
+                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Update list</p>
 
-  <br>
-  <p>Description: <input type="text" name="description" placeholder="Description:"></p>
-  <p>Start_date: <input type="datetime" name="start_date" placeholder="End_date:"></p>
-  <p>End_date: <input type="datetime" name="end_date" placeholder="Start_date:"></p>
-  <input class="btn btn-primary" type="submit" value="Submit">
-</form>
+                <form class="mx-1 mx-md-4" method="POST" action="/users/todos/<%= @todo.id %>/lists/update/<%= @list.id %>">
+                  <input  id="hidden" type="hidden" name="_method" value="patch">
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="text" name="description" id="form3Example1c" class="form-control" />
+                      <label class="form-label" for="form3Example1c">Description</label>
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="datetime-local" id="meeting-time" name="start_date" value="<%= @list.start_date %>">
+                      <label class="form-label" for="form3Example1c">Start Date</label>
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-row align-items-center mb-4">
+                    <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                    <div class="form-outline flex-fill mb-0">
+                      <input type="datetime-local" id="meeting-time" name="end_date" value="<%= @list.end_date %>">
+                      <label class="form-label" for="form3Example1c">End Date</label>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                    <button type="submit" class="btn btn-primary btn-lg">Update</button>
+                  </div>
+
+                </form>
+                <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                  <a class="btn btn-primary btn-lg" href="/users/todos/<%= @todo.id %>/<%= START_PAGE %>/lists">Back</a>
+                </div>
+              </div>
+              <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
