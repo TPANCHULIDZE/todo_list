@@ -72,6 +72,7 @@ class TodosController < ApplicationController
     @todo = Todo.find(params[:id])
 
     flash[:success] = "#{@todo.title} is deleted"
+    List.where(todo_id: @todo.id).destroy_all
     @todo.destroy
     
 
